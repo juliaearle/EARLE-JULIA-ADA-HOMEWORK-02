@@ -1,0 +1,210 @@
+---
+title: "EARLE-JULIA-ADA-HOMEWORK-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{R}
+library("tidyverse")
+library("curl")
+library("manipulate")
+
+x <- 8
+l <- 15
+ppois(q = x, lambda = l)
+```
+```{R}
+x <- 0
+l <- 15
+ppois(q = x, lambda = l)
+```
+
+```{R}
+x <- 3
+l = 15
+ppois(q = x, lambda = l)
+```
+```{R}
+ppois(x < 30, x > 0, lambda = 15)
+```
+```{R}
+x <- 0:30
+l <- 15
+barplot(ppois(q = x, lambda = l), ylim = 0:1, space = 0, names.arg = x, xlab = "x", 
+    ylab = "Pr(X ≤ x)", main = paste0("Cumulative Probability\nlambda = ", 
+        l))
+```
+
+```{R}
+calls <- rpois(n = 104, lambda = 15)
+calls
+```
+
+```{R}
+calls <- rpois(n = 104, lambda = 15)
+hist(calls, xlim = range(0:30), ylim = NULL)
+```
+
+```{R}
+library("curl")
+f <- f <- curl("https://raw.githubusercontent.com/difiore/ADA-2019/master/zombies.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+mean(d[["height"]])
+mean(d[["weight"]])
+mean(d[["age"]])
+mean(d[["zombies_killed"]])
+mean(d[["years_of_education"]])
+```
+```{R}
+sd(d[["height"]])
+sd(d[["weight"]])
+sd(d[["age"]])
+sd(d[["zombies_killed"]])
+sd(d[["years_of_education"]])
+```
+```{R}
+library("dplyr")
+library("psych")
+s <- select(d, gender, height, weight, age, zombies_killed, years_of_education)
+fem <- filter(s, gender == "Female")
+masc <- filter(s, gender == "Male")
+masc
+fem
+```
+```{R}
+library("ggplot2")
+zom1 <- boxplot(masc$height, masc$weight, masc$age, masc$zombies_killed, masc$years_of_education)
+zom2 <- boxplot(fem$height, fem$weight, fem$age, fem$zombies_killed, fem$years_of_education)
+zom1
+zom2
+```
+
+```{R}
+plot <- ggplot(data = d, aes(x = log(height, weight), y = log(age)))
+plot <- plot + geom_point(na.rm = TRUE)
+plot <- plot + theme(legend.position = "bottom", legend.title = element_blank())
+plot
+```
+
+#These variables do not seem to be related.
+
+```{R}
+hist(d$age,probability=TRUE, main="Age",xlab="Approximately normally distributed data")
+lines(density(d$age),col=2)
+hist(d$height,probability=TRUE, main="Height",xlab="Approximately normally distributed data")
+lines(density(d$height),col=2)
+hist(d$weight,probability=TRUE, main="Weight",xlab="Approximately normally distributed data")
+lines(density(d$weight),col=2)
+hist(d$zombies_killed,probability=TRUE, main="Zombies killed",xlab="Approximately normally distributed data")
+lines(density(d$zombies_killed),col=2)
+hist(d$years_of_education,probability=TRUE, main="Years of education",xlab="Approximately normally distributed data")
+lines(density(d$years_of_education),col=2)
+```
+```{R}
+qqnorm(d$age)
+qqline(d$age, col = "red")
+qqnorm(d$height)
+qqline(d$height, col = "red")
+qqnorm(d$weight)
+qqline(d$weight, col = "red")
+qqnorm(d$zombies_killed)
+qqline(d$zombies_killed, col = "red")
+qqnorm(d$years_of_education)
+qqline(d$years_of_education, col = "red")
+```
+# Based on these graphics, the variables of age, weight, and height are normally distributed, while the variables of "zombies killed" and "years of education" are not normally distributed. Instead, the latter appear to be binomially distributed.
+
+```{R}
+zom <- d[sample(nrow(d), 30), ]
+zom
+```
+```{R}
+mean(zom$height)
+mean(zom$weight)
+mean(zom$zombies_killed)
+mean(zom$years_of_education)
+mean(zom$age)
+```
+```{R}
+sd(zom[["height"]])
+se <- function(x) {sd(zom$height)/sqrt(length(x))}
+se(zom$height)
+```
+```{R}
+sd(zom[["weight"]])
+se <- function(x) {sd(zom$weight)/sqrt(length(x))}
+se(zom$weight)
+```
+```{R}
+sd(zom[["age"]])
+se <- function(x) {sd(zom$age)/sqrt(length(x))}
+se(zom$age)
+```
+```{R}
+sd(zom[["zombies_killed"]])
+se <- function(x) {sd(zom$zombies_killed)/sqrt(length(x))}
+se(zom$zombies_killed)
+```
+```{R}
+sd(zom[["years_of_education"]])
+se <- function(x) {sd(zom$years_of_education)/sqrt(length(x))}
+se(zom$years_of_education)
+```
+
+```{R}
+#height
+a <- 67.6301
+s <- 4.310126
+n <- 30
+hci <- qnorm(0.975)*s/sqrt(n)
+hci
+```
+```{R}
+#weight
+a <- 138.9894
+s <- 17.88356
+n <- 30
+wci <- qnorm(0.975)*s/sqrt(n)
+wci
+```
+```{R}
+#age
+a <- 20.14818
+s <- 3.138246
+n <- 30
+aci <- qnorm(0.975)*s/sqrt(n)
+aci
+```
+```{R}
+k <- 99
+n <- 30
+s <- NULL
+x <- d
+for (i in 1:k) {
+    s[[i]] <- sample(x, size = n, replace = TRUE)
+}
+head(s)
+```
